@@ -12,9 +12,21 @@
                         role="menu"
                         data-accordion="false">
                         <li class="nav-item">
-                            <a href="./generate/theme.html" class="nav-link">
+                            <a href="home.php" class="nav-link">
                                 <i class="nav-icon bi bi-house-fill"></i>
                                 <p>Halaman Utama</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul
+                        class="nav sidebar-menu flex-column"
+                        data-lte-toggle="treeview"
+                        role="menu"
+                        data-accordion="false">
+                        <li class="nav-item">
+                            <a href="panen.php" class="nav-link">
+                               <i class="nav-icon bi bi-basket-fill"></i>
+                                <p>Panen</p>
                             </a>
                         </li>
                     </ul>
