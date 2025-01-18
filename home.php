@@ -28,12 +28,12 @@ if (!$id_user) {
             </div>
             <div class="app-content">
                 <div class="text-center mt-5">
-                    <img src="src/images/sawit.jpg" alt="Centered Image" style="max-width: 100%; height: auto; margin-bottom: 20px; margin-top: 2rem;">
-
+                    <img src="src/images/sawit.jpg" alt="Centered Image"
+                        style="max-width: 100%; height: auto; margin-bottom: 20px; margin-top: 7rem; transform: scale(2);">
                     <br>
                     <div class="app-content">
                         <div class="text-center mt-5">
-                            <h1 style="font-size: 30px; font-weight: bold; margin-top:5rem;">
+                            <h1 style="font-size: 30px; font-weight: bold; margin-top:9rem;">
                                 Selamat datang, <b><?php echo htmlspecialchars($name); ?></b>
                                 di halaman <?php echo $level == 1 ? "administrator" : ($level == 2 ? "pimpinan" : ""); ?>
                                 sistem informasi pemantauan hasil panen dan distribusi kelapa sawit.
