@@ -69,6 +69,14 @@
                         </a>
                     </li>
                 <?php elseif ($level == 2): ?>
+                    <!-- Home -->
+                    <li class="nav-item">
+                        <a href="home.php" class="nav-link">
+                            <i class="nav-icon bi bi-house-fill"></i>
+                            <p>Halaman Utama</p>
+                        </a>
+                    </li>
+                    
                     <!-- Manage User -->
                     <li class="nav-item">
                         <a href="user.php" class="nav-link">

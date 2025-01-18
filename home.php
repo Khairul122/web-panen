@@ -34,7 +34,6 @@ if (!$id_user) {
                 </div>
             </div>
             <div class="app-content">
-                <!-- Konten utama -->
                 <div class="text-center mt-5">
                     <h1 style="font-size: 54px; font-weight: bold;">
                         PERANCANGAN WEBSITE PEMANTAUAN HASIL PANEN DAN DISTRIBUSI HARIAN BUAH KELAPA SAWIT PADA UD GALANG
