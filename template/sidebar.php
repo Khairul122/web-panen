@@ -1,8 +1,8 @@
 <!-- Sidebar Component -->
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+<aside class="app-sidebar shadow" style="background-color:rgb(83, 175, 255); color: white;" data-bs-theme="dark">
     <!-- Brand Logo -->
     <div class="sidebar-brand">
-        <a href="./index.html" class="brand-link">
+        <a href="./index.html" class="brand-link" style="color: white;">
             <span class="brand-text fw-light">UD GALANG</span>
         </a>
     </div>
@@ -105,3 +105,15 @@
         </nav>
     </div>
 </aside>
+
+<style>
+    .app-sidebar .nav-link {
+        color: white;
+    }
+    .app-sidebar .nav-link:hover {
+        color: #cce5ff;
+    }
+    .app-sidebar .sidebar-brand a {
+        color: white;
+    }
+</style>

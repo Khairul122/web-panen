@@ -23,29 +23,25 @@ if (!$id_user) {
         <main class="app-main">
             <div class="app-content-header">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h3 class="mb-0">Halaman Utama</h3>
-                        </div>
-                        <div class="col-sm-6 text-end">
-                            <p class="mb-0">Welcome, <b><?php echo $name; ?></b>!</p>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div class="app-content">
                 <div class="text-center mt-5">
-                    <h1 style="font-size: 54px; font-weight: bold;">
-                        PERANCANGAN WEBSITE PEMANTAUAN HASIL PANEN DAN DISTRIBUSI HARIAN BUAH KELAPA SAWIT PADA UD GALANG
-                    </h1>
+                    <img src="src/images/sawit.jpg" alt="Centered Image" style="max-width: 100%; height: auto; margin-bottom: 20px; margin-top: 2rem;">
+
                     <br>
-                    <h2 style="font-size: 38px;">
-                        Oleh :
-                    </h2>
-                    <h2 style="font-size: 42px; font-weight: bold;">
-                        MESA KAMELIA <br>
-                        21101152610434
-                    </h2>
+                    <div class="app-content">
+                        <div class="text-center mt-5">
+                            <h1 style="font-size: 30px; font-weight: bold; margin-top:5rem;">
+                                Selamat datang, <b><?php echo htmlspecialchars($name); ?></b>
+                                di halaman <?php echo $level == 1 ? "administrator" : ($level == 2 ? "pimpinan" : ""); ?>
+                                sistem informasi pemantauan hasil panen dan distribusi kelapa sawit.
+                                Melalui halaman ini dapat dilakukan pengelolaan data hasil panen dan distribusi kelapa sawit serta pengelolaan laporan hasil panen dan pendistribusian kelapa sawit.
+                            </h1>
+                        </div>
+                    </div>
+                    <br>
                 </div>
             </div>
         </main>
