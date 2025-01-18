@@ -16,7 +16,6 @@ if (!$id_user) {
 }
 ?>
 
-
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">
         <?php include 'template/navbar.php'; ?>
@@ -26,7 +25,7 @@ if (!$id_user) {
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">Dashboard</h3>
+                            <h3 class="mb-0">Halaman Utama</h3>
                         </div>
                         <div class="col-sm-6 text-end">
                             <p class="mb-0">Welcome, <b><?php echo $name; ?></b>!</p>
@@ -35,7 +34,20 @@ if (!$id_user) {
                 </div>
             </div>
             <div class="app-content">
-                <!-- Content utama di sini -->
+                <!-- Konten utama -->
+                <div class="text-center mt-5">
+                    <h1 style="font-size: 54px; font-weight: bold;">
+                        PERANCANGAN WEBSITE PEMANTAUAN HASIL PANEN DAN DISTRIBUSI HARIAN BUAH KELAPA SAWIT PADA UD GALANG
+                    </h1>
+                    <br>
+                    <h2 style="font-size: 38px;">
+                        Oleh :
+                    </h2>
+                    <h2 style="font-size: 42px; font-weight: bold;">
+                        MESA KAMELIA <br>
+                        21101152610434
+                    </h2>
+                </div>
             </div>
         </main>
         <footer class="app-footer">
