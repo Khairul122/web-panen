@@ -43,7 +43,7 @@
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="login-logo">
-            <a href="../index2.html"><b>Admin</b>LTE</a>
+            <a href="../index2.html"><b>UD GALANG</a>
         </div>
         <div class="card">
             <div class="card-body login-card-body">
@@ -60,7 +60,7 @@
                     <div class="row">
                         <div class="col-8-center">
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Sign In</button>
+                                <button type="submit" class="btn btn-primary">Login</button>
                             </div>
                         </div>
                     </div>
@@ -71,14 +71,17 @@
 </body>
 </html>
 <?php
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     include 'koneksi.php';
+
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT id_user, name, level FROM user WHERE username = ? AND password = SHA(?)";
+    $sql = "SELECT id_user, name, level, peron FROM user WHERE username = ? AND password = SHA(?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('ss', $username, $password);
     $stmt->execute();
@@ -89,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['id_user'] = $user['id_user'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['level'] = $user['level'];
+        $_SESSION['peron'] = $user['peron'];
 
         echo "<script>alert('Berhasil login!'); window.location.href = 'home.php';</script>";
     } else {
@@ -99,3 +103,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->close();
 }
 ?>
+

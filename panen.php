@@ -1,10 +1,5 @@
 <?php
 include 'template/header.php';
-if (!isset($_SESSION['id_user'])) {
-    echo "<script>alert('Silakan login terlebih dahulu!'); window.location.href = 'index.php';</script>";
-    exit();
-}
-
 $id_user = $_SESSION['id_user'];
 $name = $_SESSION['name'];
 $level = $_SESSION['level'];
@@ -20,9 +15,6 @@ $level = $_SESSION['level'];
                     <div class="row">
                         <div class="col-sm-6">
                             <h3 class="mb-0">Panen</h3>
-                        </div>
-                        <div class="col-sm-6 text-end">
-                            <p class="mb-0">Welcome, <b><?php echo $name; ?></b>!</p>
                         </div>
                     </div>
                 </div>
@@ -45,15 +37,24 @@ $level = $_SESSION['level'];
                                             <th>Jumlah Tandan</th>
                                             <th>Kondisi Panen</th>
                                             <th>Catatan</th>
+                                            <th>Dibuat Oleh</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         include 'koneksi.php';
-                                        $query = "SELECT * FROM panen ORDER BY tanggal_panen DESC";
-                                        $result = $conn->query($query);
+                                        $peron = $_SESSION['peron']; 
 
+                                        $query = "SELECT panen.*, user.name 
+                                            FROM panen 
+                                            JOIN user ON panen.create_by = user.id_user 
+                                            WHERE user.peron = ? 
+                                            ORDER BY tanggal_panen DESC";
+                                        $stmt = $conn->prepare($query);
+                                        $stmt->bind_param('s', $peron);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
                                         if ($result->num_rows > 0) {
                                             $no = 1;
                                             while ($row = $result->fetch_assoc()) {
@@ -65,9 +66,12 @@ $level = $_SESSION['level'];
                                                 echo "<td>" . $row['jumlah_tandan'] . "</td>";
                                                 echo "<td>" . $row['kondisi_panen'] . "</td>";
                                                 echo "<td>" . $row['catatan'] . "</td>";
+                                                echo "<td>" . $row['name'] . "</td>";
                                                 echo "<td>
                                                     <a href='panen.php?edit_id=" . $row['id_panen'] . "' class='btn btn-warning btn-sm'>Edit</a>
-                                                    <a href='hapus_panen.php?id=" . $row['id_panen'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Yakin ingin menghapus data ini?\")'>Hapus</a>
+                                                     <a href='?delete_id=" . $row['id_panen'] . "' 
+                                                        class='btn btn-danger btn-sm' 
+                                                        onclick='return confirm(\"Yakin ingin menghapus data ini?\")'>Hapus</a>
                                                 </td>";
                                                 echo "</tr>";
                                             }
@@ -76,7 +80,6 @@ $level = $_SESSION['level'];
                                         }
                                         ?>
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>
@@ -196,10 +199,22 @@ $level = $_SESSION['level'];
         $stmt->close();
     }
     ?>
-
-
-
-
 </body>
+<?php
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+    $query = "DELETE FROM panen WHERE id_panen = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $delete_id);
+
+    if ($stmt->execute()) {
+        echo "<script>alert('Data berhasil dihapus!'); window.location.href = 'panen.php';</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus data: " . $stmt->error . "'); window.location.href = 'panen.php';</script>";
+    }
+
+    $stmt->close();
+}
+?>
 
 </html>

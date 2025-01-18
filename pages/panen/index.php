@@ -1,21 +1,10 @@
 <?php
-include 'template/header.php';
+include '../../../template/header.php';
 
-// Pastikan sesi dimulai
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-$id_user = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null;
-$name = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest';
-$level = isset($_SESSION['level']) ? $_SESSION['level'] : null;
-$peron = isset($_SESSION['peron']) ? $_SESSION['peron'] : null;
-
-if (!$id_user) {
-    echo "<script>alert('Silakan login terlebih dahulu!'); window.location.href = 'index.php';</script>";
-    exit();
-}
+$id_user = $_SESSION['id_user'];
+$name = $_SESSION['name'];
+$level = $_SESSION['level'];
 ?>
-
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <div class="app-wrapper">

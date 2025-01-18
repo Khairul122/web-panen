@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param('ssdiisi', $tanggal_panen, $kebun, $berat_hasil, $jumlah_tandan, $kondisi_panen, $catatan, $create_by);
 
     if ($stmt->execute()) {
-        echo "<script>alert('Data berhasil ditambahkan!'); window.location.href = 'home.php';</script>";
+        echo "<script>alert('Data berhasil ditambahkan!'); window.location.href = 'panen.php';</script>";
     } else {
-        echo "<script>alert('Gagal menambahkan data: " . $stmt->error . "'); window.location.href = 'home.php';</script>";
+        echo "<script>alert('Gagal menambahkan data: " . $stmt->error . "'); window.location.href = 'panen.php';</script>";
     }
 
     $stmt->close();
