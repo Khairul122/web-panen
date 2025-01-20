@@ -149,7 +149,7 @@ $level = $_SESSION['level'];
             <div class="modal fade show" id="editPetaniModal" tabindex="-1" aria-labelledby="editPetaniModalLabel" aria-modal="true" style="display: block;">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form action="proses_edit_petani.php" method="POST">
+                        <form action="edit_petani.php" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editPetaniModalLabel">Edit Petani</h5>
                                 <button type="button" class="btn-close" onclick="window.location.href='petani.php'" aria-label="Close"></button>
