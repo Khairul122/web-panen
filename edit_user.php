@@ -5,22 +5,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_user = $_POST['id_user'];
     $name = $_POST['name'];
     $username = $_POST['username'];
-    $peron = $_POST['peron'] ? $_POST['peron'] : null;
+    $id_peron = !empty($_POST['id_peron']) ? $_POST['id_peron'] : null; 
     $password = $_POST['password'];
     $level = $_POST['level'];
 
     if (!empty($password)) {
         $query = "UPDATE user 
-                  SET name = ?, username = ?, peron = ?, password = SHA(?), level = ? 
+                  SET name = ?, username = ?, id_peron = ?, password = SHA1(?), level = ? 
                   WHERE id_user = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('ssssii', $name, $username, $peron, $password, $level, $id_user);
+        if (!$stmt) {
+            die("Error preparing statement: " . $conn->error);
+        }
+        $stmt->bind_param('ssissi', $name, $username, $id_peron, $password, $level, $id_user);
     } else {
         $query = "UPDATE user 
-                  SET name = ?, username = ?, peron = ?, level = ? 
+                  SET name = ?, username = ?, id_peron = ?, level = ? 
                   WHERE id_user = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('sssii', $name, $username, $peron, $level, $id_user);
+        if (!$stmt) {
+            die("Error preparing statement: " . $conn->error);
+        }
+        $stmt->bind_param('ssiii', $name, $username, $id_peron, $level, $id_user);
     }
 
     if ($stmt->execute()) {

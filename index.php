@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>LOGIN</title>
@@ -40,6 +41,7 @@
         integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
         crossorigin="anonymous" />
 </head>
+
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="login-logo">
@@ -69,6 +71,7 @@
         </div>
     </div>
 </body>
+
 </html>
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -81,8 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT id_user, name, level, peron FROM user WHERE username = ? AND password = SHA(?)";
+    $sql = "SELECT id_user, name, level, id_peron FROM user WHERE username = ? AND password = SHA(?)";
     $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        die("Error preparing statement: " . $conn->error);
+    }
+
     $stmt->bind_param('ss', $username, $password);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -92,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['id_user'] = $user['id_user'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['level'] = $user['level'];
-        $_SESSION['peron'] = $user['peron'];
+        $_SESSION['id_peron'] = $user['id_peron'];
 
         echo "<script>alert('Berhasil login!'); window.location.href = 'home.php';</script>";
     } else {
@@ -103,4 +111,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->close();
 }
 ?>
-

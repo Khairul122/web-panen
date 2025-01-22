@@ -9,20 +9,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $supir = $_POST['supir'];
     $jumlah_distribusi = $_POST['jumlah_distribusi'];
     $status_pengiriman = $_POST['status_pengiriman'];
-    
-    if (empty($id_distribusi) || empty($tanggal_distribusi) || empty($tujuan) || empty($no_kendaraan) || empty($supir) || empty($jumlah_distribusi) || empty($status_pengiriman)) {
-        echo "<script>alert('Harap isi semua data!'); window.location.href = 'distribusi.php';</script>";
-        exit;
-    }
+    $id_peron = $_POST['id_peron'];
 
+    // Query untuk memperbarui data
     $query = "UPDATE distribusi 
-              SET tanggal_distribusi = ?, tujuan = ?, no_kendaraan = ?, supir = ?, jumlah_distribusi = ?, status_pengiriman = ? 
+              SET tanggal_distribusi = ?, 
+                  tujuan = ?, 
+                  no_kendaraan = ?, 
+                  supir = ?, 
+                  jumlah_distribusi = ?, 
+                  status_pengiriman = ?, 
+                  id_peron = ?
               WHERE id_distribusi = ?";
+
+    // Siapkan statement
     $stmt = $conn->prepare($query);
 
     if ($stmt) {
-        $stmt->bind_param('ssssisi', $tanggal_distribusi, $tujuan, $no_kendaraan, $supir, $jumlah_distribusi, $status_pengiriman, $id_distribusi);
+        $stmt->bind_param(
+            'ssssissi',
+            $tanggal_distribusi,
+            $tujuan,
+            $no_kendaraan,
+            $supir,
+            $jumlah_distribusi,
+            $status_pengiriman,
+            $id_peron,
+            $id_distribusi
+        );
 
+        // Eksekusi statement
         if ($stmt->execute()) {
             echo "<script>alert('Data berhasil diperbarui!'); window.location.href = 'distribusi.php';</script>";
         } else {
@@ -31,9 +47,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt->close();
     } else {
-        echo "<script>alert('Gagal mempersiapkan statement: " . $conn->error . "'); window.location.href = 'distribusi.php';</script>";
+        echo "<script>alert('Gagal mempersiapkan query: " . $conn->error . "'); window.location.href = 'distribusi.php';</script>";
     }
 
+    // Tutup koneksi
     $conn->close();
+} else {
+    echo "<script>alert('Akses tidak diizinkan!'); window.location.href = 'distribusi.php';</script>";
 }
-?>

@@ -9,13 +9,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $no_kendaraan = $_POST['no_kendaraan'];
     $supir = $_POST['supir'];
     $status_pengiriman = $_POST['status_pengiriman'];
+    $id_peron = $_POST['id_peron']; 
     $create_by = $_SESSION['id_user'];
 
-    $query = "INSERT INTO distribusi (tanggal_distribusi, tujuan, no_kendaraan, supir, jumlah_distribusi, status_pengiriman, create_by) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO distribusi (tanggal_distribusi, tujuan, no_kendaraan, supir, jumlah_distribusi, status_pengiriman, id_peron, create_by) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssssisi', $tanggal_distribusi, $tujuan, $no_kendaraan, $supir, $jumlah_distribusi, $status_pengiriman, $create_by);
-
+    $stmt->bind_param('ssssisis', $tanggal_distribusi, $tujuan, $no_kendaraan, $supir, $jumlah_distribusi, $status_pengiriman, $id_peron, $create_by);
 
     if ($stmt->execute()) {
         echo "<script>alert('Data berhasil ditambahkan!'); window.location.href = 'distribusi.php';</script>";

@@ -51,7 +51,7 @@ class DistributionReportGenerator {
         $tanggal = $filters['tanggal'] ?? null;
         $bulan = $filters['bulan'] ?? null;
         $tahun = $filters['tahun'] ?? null;
-        $peron = $filters['peron'] ?? null;
+        $peron = $filters['nama_peron'] ?? null;
 
         $data = $this->fetchData($filters);
         $this->pdf->AddPage();
@@ -65,27 +65,28 @@ class DistributionReportGenerator {
 
     private function fetchData($filters) {
         $query = "
-            SELECT distribusi.*, user.peron, user.name
+            SELECT distribusi.*, peron.nama_peron, user.name
             FROM distribusi
+            JOIN peron ON distribusi.id_peron = peron.id_peron
             JOIN user ON distribusi.create_by = user.id_user
             WHERE 1=1";
         $params = [];
 
-        if ($filters['tanggal']) {
-            $query .= " AND DATE(tanggal_distribusi) = ?";
+        if (!empty($filters['tanggal'])) {
+            $query .= " AND DATE(distribusi.tanggal_distribusi) = ?";
             $params[] = $filters['tanggal'];
         }
-        if ($filters['bulan']) {
-            $query .= " AND MONTH(tanggal_distribusi) = ?";
+        if (!empty($filters['bulan'])) {
+            $query .= " AND MONTH(distribusi.tanggal_distribusi) = ?";
             $params[] = $filters['bulan'];
         }
-        if ($filters['tahun']) {
-            $query .= " AND YEAR(tanggal_distribusi) = ?";
+        if (!empty($filters['tahun'])) {
+            $query .= " AND YEAR(distribusi.tanggal_distribusi) = ?";
             $params[] = $filters['tahun'];
         }
-        if ($filters['peron']) {
-            $query .= " AND user.peron = ?";
-            $params[] = $filters['peron'];
+        if (!empty($filters['id_peron'])) {
+            $query .= " AND distribusi.id_peron = ?";
+            $params[] = $filters['id_peron'];
         }
 
         $stmt = $this->conn->prepare($query);
@@ -114,6 +115,9 @@ class DistributionReportGenerator {
         if ($periode) {
             $this->pdf->Cell(0, 10, "Periode: $periode", 0, 1, 'C');
         }
+        if ($peron) {
+            $this->pdf->Cell(0, 10, "Peron: $peron", 0, 1, 'C');
+        }
         $this->pdf->Ln(5);
     }
 
@@ -125,7 +129,7 @@ class DistributionReportGenerator {
                 <tr style="background-color: #f2f2f2;">
                     <th>No</th>
                     <th>Tanggal Distribusi</th>
-                    <th>Peron</th>
+                    <th>Nama Peron</th>
                     <th>Jumlah Distribusi</th>
                     <th>No Kendaraan</th>
                     <th>Supir</th>
@@ -151,7 +155,7 @@ class DistributionReportGenerator {
                     </tr>',
                     $no++,
                     htmlspecialchars($row['tanggal_distribusi']),
-                    htmlspecialchars($row['peron']),
+                    htmlspecialchars($row['nama_peron']),
                     htmlspecialchars($row['jumlah_distribusi']),
                     htmlspecialchars($row['no_kendaraan']),
                     htmlspecialchars($row['supir']),
@@ -160,7 +164,7 @@ class DistributionReportGenerator {
                 );
             }
         } else {
-            $html .= '<tr><td colspan="7" align="center">Tidak ada data</td></tr>';
+            $html .= '<tr><td colspan="8" align="center">Tidak ada data</td></tr>';
         }
 
         $html .= '</tbody></table>';
@@ -182,10 +186,10 @@ class DistributionReportGenerator {
 }
 
 $filters = [
-    'tanggal' => $_GET['tanggal_distribusi'] ?? null,
-    'bulan' => $_GET['bulan_distribusi'] ?? null,
-    'tahun' => $_GET['tahun_distribusi'] ?? null,
-    'peron' => $_GET['peron'] ?? null
+    'tanggal' => $_GET['tanggal'] ?? null,
+    'bulan' => $_GET['bulan'] ?? null,
+    'tahun' => $_GET['tahun'] ?? null,
+    'id_peron' => $_GET['id_peron'] ?? null 
 ];
 
 $reportGenerator = new DistributionReportGenerator($conn);

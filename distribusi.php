@@ -33,6 +33,7 @@ $level = $_SESSION['level'];
                                             <th>No</th>
                                             <th>Tanggal Distribusi</th>
                                             <th>Jumlah Distribusi</th>
+                                            <th>Peron</th>
                                             <th>Tujuan</th>
                                             <th>No Kendaraan</th>
                                             <th>Supir</th>
@@ -43,14 +44,17 @@ $level = $_SESSION['level'];
                                     <tbody>
                                         <?php
                                         include 'koneksi.php';
-                                        $peron = $_SESSION['peron']; 
+                                        $id_peron = $_SESSION['id_peron'];
 
-                                        $query = "SELECT * FROM distribusi 
-                                                  WHERE create_by IN (SELECT id_user FROM user WHERE peron = ?) 
-                                                  ORDER BY tanggal_distribusi DESC";
+                                        $query = "SELECT distribusi.*, peron.nama_peron 
+                                        FROM distribusi 
+                                        JOIN peron ON distribusi.id_peron = peron.id_peron
+                                        WHERE distribusi.id_peron = ? 
+                                        ORDER BY distribusi.tanggal_distribusi DESC";
+                              
 
                                         $stmt = $conn->prepare($query);
-                                        $stmt->bind_param('s', $peron);
+                                        $stmt->bind_param('i', $id_peron);
                                         $stmt->execute();
                                         $result = $stmt->get_result();
 
@@ -61,18 +65,19 @@ $level = $_SESSION['level'];
                                                 echo "<td>" . $no++ . "</td>";
                                                 echo "<td>" . $row['tanggal_distribusi'] . "</td>";
                                                 echo "<td>" . $row['jumlah_distribusi'] . "</td>";
+                                                echo "<td>" . $row['nama_peron'] . "</td>";
                                                 echo "<td>" . $row['tujuan'] . "</td>";
                                                 echo "<td>" . $row['no_kendaraan'] . "</td>";
                                                 echo "<td>" . $row['supir'] . "</td>";
                                                 echo "<td>" . $row['status_pengiriman'] . "</td>";
                                                 echo "<td>
-                                                    <a href='?edit_id=" . $row['id_distribusi'] . "' class='btn btn-warning btn-sm'>Edit</a>
-                                                    <a href='?delete_id=" . $row['id_distribusi'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Yakin ingin menghapus data ini?\")'>Hapus</a>
-                                                </td>";
+                <a href='?edit_id=" . $row['id_distribusi'] . "' class='btn btn-warning btn-sm'>Edit</a>
+                <a href='?delete_id=" . $row['id_distribusi'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Yakin ingin menghapus data ini?\")'>Hapus</a>
+            </td>";
                                                 echo "</tr>";
                                             }
                                         } else {
-                                            echo "<tr><td colspan='7' class='text-center'>Belum ada data</td></tr>";
+                                            echo "<tr><td colspan='8' class='text-center'>Belum ada data</td></tr>";
                                         }
                                         ?>
                                     </tbody>
@@ -105,7 +110,6 @@ $level = $_SESSION['level'];
                             <label for="jumlah_distribusi" class="form-label">Jumlah Distribusi</label>
                             <input type="number" class="form-control" id="jumlah_distribusi" name="jumlah_distribusi" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="tujuan" class="form-label">Tujuan</label>
                             <input type="text" class="form-control" id="tujuan" name="tujuan" required>
@@ -117,6 +121,25 @@ $level = $_SESSION['level'];
                         <div class="mb-3">
                             <label for="supir" class="form-label">Supir</label>
                             <input type="text" class="form-control" id="supir" name="supir" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_peron" class="form-label">Nama Peron</label>
+                            <select class="form-control" id="id_peron" name="id_peron" required>
+                                <option value="" disabled selected>Pilih Peron</option>
+                                <?php
+                                include 'koneksi.php';
+                                $query = "SELECT id_peron, nama_peron FROM peron ORDER BY nama_peron ASC";
+                                $result = $conn->query($query);
+
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<option value='" . $row['id_peron'] . "'>" . $row['nama_peron'] . "</option>";
+                                    }
+                                } else {
+                                    echo "<option value='' disabled>Data Peron Kosong</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="status_pengiriman" class="form-label">Status Pengiriman</label>
@@ -185,6 +208,25 @@ $level = $_SESSION['level'];
                                         <option value="Dalam Perjalanan" <?php if ($data['status_pengiriman'] === 'Dalam Perjalanan') echo 'selected'; ?>>Dalam Perjalanan</option>
                                         <option value="Selesai" <?php if ($data['status_pengiriman'] === 'Selesai') echo 'selected'; ?>>Selesai</option>
                                         <option value="Gagal" <?php if ($data['status_pengiriman'] === 'Gagal') echo 'selected'; ?>>Gagal</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_peron" class="form-label">Nama Peron</label>
+                                    <select class="form-control" name="id_peron" required>
+                                        <?php
+                                        include 'koneksi.php';
+                                        $query = "SELECT id_peron, nama_peron FROM peron ORDER BY nama_peron ASC";
+                                        $result = $conn->query($query);
+
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                $selected = ($row['id_peron'] == $data['id_peron']) ? 'selected' : '';
+                                                echo "<option value='" . $row['id_peron'] . "' $selected>" . $row['nama_peron'] . "</option>";
+                                            }
+                                        } else {
+                                            echo "<option value='' disabled>Data Peron Kosong</option>";
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>

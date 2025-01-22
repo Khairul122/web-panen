@@ -4,13 +4,18 @@ include 'koneksi.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $username = $_POST['username'];
-    $peron = $_POST['peron'] ? $_POST['peron'] : null;
+    $id_peron = !empty($_POST['id_peron']) ? $_POST['id_peron'] : null;
     $password = $_POST['password'];
     $level = $_POST['level'];
 
-    $query = "INSERT INTO user (name, username, peron, password, level) VALUES (?, ?, ?, SHA(?), ?)";
+    $query = "INSERT INTO user (name, username, id_peron, password, level) VALUES (?, ?, ?, SHA1(?), ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssssi', $name, $username, $peron, $password, $level);
+
+    if (!$stmt) {
+        die("Error preparing statement: " . $conn->error);
+    }
+
+    $stmt->bind_param('ssisi', $name, $username, $id_peron, $password, $level);
 
     if ($stmt->execute()) {
         echo "<script>alert('User berhasil ditambahkan!'); window.location.href = 'user.php';</script>";

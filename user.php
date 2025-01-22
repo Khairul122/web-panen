@@ -51,7 +51,12 @@ if (!$id_user || $level != 2) {
                                     <tbody>
                                         <?php
                                         include 'koneksi.php';
-                                        $query = "SELECT * FROM user WHERE level = 1";
+                                        $query = "
+                                        SELECT user.*, peron.nama_peron 
+                                        FROM user
+                                        LEFT JOIN peron ON user.id_peron = peron.id_peron
+                                        WHERE user.level = 1 OR user.level = 3
+                                    ";
                                         $result = $conn->query($query);
 
                                         if ($result->num_rows > 0) {
@@ -61,8 +66,8 @@ if (!$id_user || $level != 2) {
                                                 echo "<td>" . $no++ . "</td>";
                                                 echo "<td>" . $row['name'] . "</td>";
                                                 echo "<td>" . $row['username'] . "</td>";
-                                                echo "<td>" . ($row['peron'] ? $row['peron'] : '-') . "</td>";
-                                                echo "<td>" . ($row['level'] == 1 ? 'Admin' : 'Pimpinan') . "</td>";
+                                                echo "<td>" . ($row['nama_peron'] ? htmlspecialchars($row['nama_peron']) : '-') . "</td>";
+                                                echo "<td>" . ($row['level'] == 1 ? 'Admin' : ($row['level'] == 3 ? 'Petugas' : 'Unknown')) . "</td>";
                                                 echo "<td>
                                                     <a href='?edit_id=" . $row['id_user'] . "' class='btn btn-warning btn-sm'>Edit</a>
                                                     <a href='?delete_id=" . $row['id_user'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Yakin ingin menghapus user ini?\")'>Hapus</a>
@@ -104,8 +109,22 @@ if (!$id_user || $level != 2) {
                             <input type="text" class="form-control" id="username" name="username" required>
                         </div>
                         <div class="mb-3">
-                            <label for="peron" class="form-label">Peron</label>
-                            <input type="text" class="form-control" id="peron" name="peron">
+                            <label for="id_peron" class="form-label">Nama Peron</label>
+                            <select class="form-control" id="id_peron" name="id_peron" required>
+                                <option value="" disabled selected>Pilih Peron</option>
+                                <?php
+                                include 'koneksi.php';
+                                $query = "SELECT id_peron, nama_peron FROM peron ORDER BY nama_peron ASC";
+                                $result = $conn->query($query);
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<option value='" . $row['id_peron'] . "'>" . $row['nama_peron'] . "</option>";
+                                    }
+                                } else {
+                                    echo "<option value='' disabled>Data Peron Kosong</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
@@ -115,7 +134,7 @@ if (!$id_user || $level != 2) {
                             <label for="level" class="form-label">Level</label>
                             <select class="form-control" id="level" name="level" required>
                                 <option value="1">Admin</option>
-                                <option value="2">Pimpinan</option>
+                                <option value="3">Petugas</option>
                             </select>
                         </div>
                     </div>
@@ -124,73 +143,90 @@ if (!$id_user || $level != 2) {
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
 
     <!-- Modal Edit User -->
     <?php
-if (isset($_GET['edit_id'])) {
-    $edit_id = $_GET['edit_id'];
-    $query = "SELECT * FROM user WHERE id_user = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('i', $edit_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if (isset($_GET['edit_id'])) {
+        $edit_id = $_GET['edit_id'];
+        $query = "SELECT * FROM user WHERE id_user = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $edit_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $data = $result->fetch_assoc();
-        ?>
-        <div class="modal fade show" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-modal="true" style="display: block;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="edit_user.php" method="POST">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
-                            <button type="button" class="btn-close" onclick="window.location.href='user.php'" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" name="id_user" value="<?php echo $data['id_user']; ?>">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Nama</label>
-                                <input type="text" class="form-control" name="name" value="<?php echo $data['name']; ?>" required>
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+    ?>
+            <div class="modal fade show" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-modal="true" style="display: block;">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="edit_user.php" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                                <button type="button" class="btn-close" onclick="window.location.href='user.php'" aria-label="Close"></button>
                             </div>
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" name="username" value="<?php echo $data['username']; ?>" required>
+                            <div class="modal-body">
+                                <input type="hidden" name="id_user" value="<?php echo $data['id_user']; ?>">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nama</label>
+                                    <input type="text" class="form-control" name="name" value="<?php echo $data['name']; ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" name="username" value="<?php echo $data['username']; ?>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_peron" class="form-label">Nama Peron</label>
+                                    <select class="form-control" id="id_peron" name="id_peron">
+                                        <option value="" disabled selected>Pilih Peron</option>
+                                        <?php
+                                        include 'koneksi.php';
+                                        $query = "SELECT id_peron, nama_peron FROM peron ORDER BY nama_peron ASC";
+                                        $result = $conn->query($query);
+
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                $selected = ($row['id_peron'] == $data['id_peron']) ? 'selected' : '';
+                                                echo "<option value='" . $row['id_peron'] . "' $selected>" . $row['nama_peron'] . "</option>";
+                                            }
+                                        } else {
+                                            echo "<option value='' disabled>Data Peron Kosong</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password (Opsional)</label>
+                                    <input type="password" class="form-control" name="password" placeholder="Kosongkan jika tidak ingin mengganti">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="level" class="form-label">Level</label>
+                                    <select class="form-control" name="level" required>
+                                        <option value="1" <?php if ($data['level'] == 1) echo 'selected'; ?>>Admin</option>
+                                        <option value="3" <?php if ($data['level'] == 3) echo 'selected'; ?>>Petugas</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="peron" class="form-label">Peron</label>
-                                <input type="text" class="form-control" name="peron" value="<?php echo $data['peron']; ?>">
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='user.php'">Batal</button>
                             </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password (Opsional)</label>
-                                <input type="password" class="form-control" name="password" placeholder="Kosongkan jika tidak ingin mengganti">
-                            </div>
-                            <div class="mb-3">
-                                <label for="level" class="form-label">Level</label>
-                                <select class="form-control" name="level" required>
-                                    <option value="1" <?php if ($data['level'] == 1) echo 'selected'; ?>>Admin</option>
-                                    <option value="2" <?php if ($data['level'] == 2) echo 'selected'; ?>>Pimpinan</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                            <button type="button" class="btn btn-secondary" onclick="window.location.href='user.php'">Batal</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-        <?php
-    } else {
-        echo "<script>alert('Data tidak ditemukan!'); window.location.href='user.php';</script>";
-    }
+    <?php
+        } else {
+            echo "<script>alert('Data tidak ditemukan!'); window.location.href='user.php';</script>";
+        }
 
-    $stmt->close();
-}
-?>
+        $stmt->close();
+    }
+    ?>
 
 </body>
 

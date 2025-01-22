@@ -37,37 +37,7 @@
                         </a>
                     </li>
 
-                    <!-- Farmers -->
-                    <li class="nav-item">
-                        <a href="petani.php" class="nav-link">
-                            <i class="nav-icon bi bi-person-fill"></i>
-                            <p>Petani</p>
-                        </a>
-                    </li>
 
-                    <!-- Customers -->
-                    <li class="nav-item">
-                        <a href="pelanggan.php" class="nav-link">
-                            <i class="nav-icon bi bi-people-fill"></i>
-                            <p>Pelanggan</p>
-                        </a>
-                    </li>
-
-                    <!-- Suppliers -->
-                    <li class="nav-item">
-                        <a href="supplier.php" class="nav-link">
-                            <i class="nav-icon bi bi-shop"></i>
-                            <p>Supplier</p>
-                        </a>
-                    </li>
-
-                    <!-- Purchases -->
-                    <li class="nav-item">
-                        <a href="pembelian.php" class="nav-link">
-                            <i class="nav-icon bi bi-cart-fill"></i>
-                            <p>Pembelian</p>
-                        </a>
-                    </li>
                 <?php elseif ($level == 2): ?>
                     <!-- Home -->
                     <li class="nav-item">
@@ -76,7 +46,7 @@
                             <p>Halaman Utama</p>
                         </a>
                     </li>
-                    
+
                     <!-- Manage User -->
                     <li class="nav-item">
                         <a href="user.php" class="nav-link">
@@ -84,7 +54,16 @@
                             <p>Kelola User</p>
                         </a>
                     </li>
-                  
+
+                    <!-- Manage Peron -->
+                    <li class="nav-item">
+                        <a href="peron.php" class="nav-link">
+                            <i class="nav-icon bi bi-gear-fill"></i>
+                            <p>Kelola Peron</p>
+                        </a>
+                    </li>
+
+
                     <!-- Print Laporan -->
                     <li class="nav-item">
                         <a href="laporan.php" class="nav-link">
@@ -92,7 +71,25 @@
                             <p>Laporan</p>
                         </a>
                     </li>
+
+                <?php elseif ($level == 3): ?>
+                    <!-- Home -->
+                    <li class="nav-item">
+                        <a href="home.php" class="nav-link">
+                            <i class="nav-icon bi bi-house-fill"></i>
+                            <p>Halaman Utama</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="panen.php" class="nav-link">
+                            <i class="nav-icon bi bi-basket-fill"></i>
+                            <p>Panen</p>
+                        </a>
+                    </li>
                 <?php endif; ?>
+
+
 
                 <!-- Logout -->
                 <li class="nav-item">
@@ -110,9 +107,11 @@
     .app-sidebar .nav-link {
         color: white;
     }
+
     .app-sidebar .nav-link:hover {
         color: #cce5ff;
     }
+
     .app-sidebar .sidebar-brand a {
         color: white;
     }
